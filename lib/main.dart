@@ -6,6 +6,7 @@ import 'features/orders/presentation/screens/orders_screen.dart';
 import 'features/profile/presentation/screens/profile_screen.dart';
 import 'features/auth/presentation/screens/splash_screen.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
+import 'features/rates/presentation/screens/live_rates_screen.dart';
 import 'core/constants/constants.dart';
 
 void main() {
@@ -43,6 +44,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   final List<Widget> _screens = [
     const HomeScreen(),
+    const LiveRatesScreen(),
     const TradeScreen(),
     const OrdersScreen(),
     const ProfileScreen(),
@@ -91,6 +93,11 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                   label: 'Home',
                 ),
                 BottomNavigationBarItem(
+                  icon: Icon(Icons.trending_up_outlined),
+                  activeIcon: Icon(Icons.trending_up_rounded),
+                  label: 'Rates',
+                ),
+                BottomNavigationBarItem(
                   icon: Icon(Icons.swap_horiz_outlined),
                   activeIcon: Icon(Icons.swap_horiz_rounded),
                   label: 'Trade',
@@ -111,7 +118,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             AnimatedPositioned(
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeOutCubic,
-              left: (MediaQuery.of(context).size.width / 4) * _selectedIndex + (MediaQuery.of(context).size.width / 8) - 15,
+              left: (MediaQuery.of(context).size.width / 5) * _selectedIndex + (MediaQuery.of(context).size.width / 10) - 15,
               top: 0,
               child: Container(
                 width: 30,

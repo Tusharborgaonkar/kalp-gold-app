@@ -13,7 +13,9 @@ class AppColors {
 
   // Metal colors
   static const Color gold = Color(0xFFD4AF37);
-  static const Color silver = Color(0xFFC0C0C0);
+  static const Color goldLight = Color(0xFFF6D365);
+  static const Color silver = Color(0xFFA8A9AD);
+  static const Color silverLight = Color(0xFFE5E7EB);
 
   // Text colors
   static const Color textPrimary = Color(0xFF1C1C1E);
@@ -28,6 +30,18 @@ class AppColors {
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     colors: [primaryLight, primary],
+  );
+
+  static const LinearGradient goldGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [gold, goldLight],
+  );
+
+  static const LinearGradient silverGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF8E9196), Color(0xFFE5E7EB), Color(0xFF8E9196)],
   );
 
   static const LinearGradient cardGradient = LinearGradient(
