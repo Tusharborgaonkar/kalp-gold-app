@@ -7,7 +7,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:kalp/main.dart';
+import 'package:mcx/main.dart';
 
 void main() {
   testWidgets('Splash screen test', (WidgetTester tester) async {

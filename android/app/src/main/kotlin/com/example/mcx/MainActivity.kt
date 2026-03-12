@@ -1,4 +1,4 @@
-package com.example.kalp
+package com.example.mcx
 
 import io.flutter.embedding.android.FlutterActivity
 
