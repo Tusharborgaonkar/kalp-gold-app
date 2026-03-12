@@ -41,21 +41,29 @@ class MainNavigationScreen extends StatefulWidget {
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _selectedIndex = 0;
+  String? _pendingMetal;
 
-  final List<Widget> _screens = [
-    const HomeScreen(),
-    const LiveRatesScreen(),
-    const TradeScreen(),
-    const OrdersScreen(),
-    const ProfileScreen(),
-  ];
+  void _onTradeRequested(String? metal) {
+    setState(() {
+      _pendingMetal = metal;
+      _selectedIndex = 2; // Index of TradeScreen
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> screens = [
+      HomeScreen(onTrade: () => _onTradeRequested(null)),
+      LiveRatesScreen(onTrade: (metal) => _onTradeRequested(metal)),
+      TradeScreen(initialMetal: _pendingMetal),
+      const OrdersScreen(),
+      const ProfileScreen(),
+    ];
+
     return Scaffold(
       body: IndexedStack(
         index: _selectedIndex,
-        children: _screens,
+        children: screens,
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
@@ -75,6 +83,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
               onTap: (index) {
                 setState(() {
                   _selectedIndex = index;
+                  if (index != 2) _pendingMetal = null;
                 });
               },
               type: BottomNavigationBarType.fixed,
@@ -114,7 +123,6 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 ),
               ],
             ),
-            // Custom active indicator
             AnimatedPositioned(
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeOutCubic,

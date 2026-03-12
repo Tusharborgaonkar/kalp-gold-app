@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/constants.dart';
 
 class LiveRatesScreen extends StatefulWidget {
-  const LiveRatesScreen({super.key});
+  final Function(String?)? onTrade;
+  const LiveRatesScreen({super.key, this.onTrade});
 
   @override
   State<LiveRatesScreen> createState() => _LiveRatesScreenState();
@@ -61,6 +62,12 @@ class _LiveRatesScreenState extends State<LiveRatesScreen> with SingleTickerProv
             ),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => widget.onTrade?.call(null), // Navigate to Trade
+        backgroundColor: AppColors.primary,
+        icon: const Icon(Icons.add_shopping_cart, color: Colors.white),
+        label: const Text('QUICK BUY', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
     );
   }
@@ -213,15 +220,15 @@ class _LiveRatesScreenState extends State<LiveRatesScreen> with SingleTickerProv
   }
 
   Widget _buildRatesTable(String metal, Color metalColor) {
-    final products = metal == 'GOLD'
+        final products = metal == 'GOLD'
         ? [
-            {'name': 'GOLD 999 (10 GM)', 'buy': '62,410', 'sell': '62,650'},
-            {'name': 'GOLD 995 (10 GM)', 'buy': '62,310', 'sell': '62,550'},
-            {'name': 'GOLD RTGS', 'buy': '62,400', 'sell': '62,640'},
+            {'name': 'GOLD 999 (10 GM)', 'buy': '62,410'},
+            {'name': 'GOLD 995 (10 GM)', 'buy': '62,310'},
+            {'name': 'GOLD RTGS', 'buy': '62,400'},
           ]
         : [
-            {'name': 'SILVER 999 (1 KG)', 'buy': '74,180', 'sell': '74,580'},
-            {'name': 'SILVER RTGS', 'buy': '74,170', 'sell': '74,570'},
+            {'name': 'SILVER 999 (1 KG)', 'buy': '74,180'},
+            {'name': 'SILVER RTGS', 'buy': '74,170'},
           ];
 
     return Column(
@@ -267,9 +274,9 @@ class _LiveRatesScreenState extends State<LiveRatesScreen> with SingleTickerProv
           ),
           child: Table(
             columnWidths: const {
-              0: FlexColumnWidth(2),
-              1: FlexColumnWidth(1),
-              2: FlexColumnWidth(1),
+              0: FlexColumnWidth(3),
+              1: FlexColumnWidth(1.5),
+              2: IntrinsicColumnWidth(),
             },
             children: [
               TableRow(
@@ -282,15 +289,15 @@ class _LiveRatesScreenState extends State<LiveRatesScreen> with SingleTickerProv
                 ),
                 children: [
                   _buildTableHeader('PRODUCT'),
-                  _buildTableHeader('BUY'),
-                  _buildTableHeader('SELL'),
+                  _buildTableHeader('BUY PRICE'),
+                  const SizedBox(), // Spacer for BUY button
                 ],
               ),
               ...products.map((p) => TableRow(
                     children: [
                       _buildTableCell(p['name']!, isBold: true),
                       _buildTableCell(p['buy']!, color: AppColors.success),
-                      _buildTableCell(p['sell']!, color: AppColors.error),
+                      _buildQuickBuyButton(p['name']!),
                     ],
                   )),
             ],
@@ -316,14 +323,38 @@ class _LiveRatesScreenState extends State<LiveRatesScreen> with SingleTickerProv
 
   Widget _buildTableCell(String text, {Color? color, bool isBold = false}) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
       child: Text(
         text,
         style: TextStyle(
           color: color ?? AppColors.textPrimary,
-          fontSize: 14,
+          fontSize: 13,
           fontWeight: isBold ? FontWeight.bold : FontWeight.w600,
         ),
+      ),
+    );
+  }
+
+  Widget _buildQuickBuyButton(String name) {
+    // Map product names to consistent TradeScreen keys
+    String? tradeKey;
+    if (name.contains('GOLD 999')) tradeKey = 'GOLD 999';
+    if (name.contains('GOLD 995')) tradeKey = 'GOLD 995';
+    if (name.contains('GOLD RTGS')) tradeKey = 'GOLD MCX';
+    if (name.contains('SILVER 999')) tradeKey = 'SILVER MCX';
+    if (name.contains('SILVER RTGS')) tradeKey = 'SILVER MCX';
+
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: TextButton(
+        onPressed: () => widget.onTrade?.call(tradeKey),
+        style: TextButton.styleFrom(
+          backgroundColor: AppColors.success.withValues(alpha: 0.1),
+          foregroundColor: AppColors.success,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+        ),
+        child: const Text('BUY', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11)),
       ),
     );
   }

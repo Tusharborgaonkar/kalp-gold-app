@@ -3,7 +3,8 @@ import '../../../../core/constants/constants.dart';
 import '../widgets/metal_sparkline.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  final VoidCallback? onTrade;
+  const HomeScreen({super.key, this.onTrade});
 
   @override
   Widget build(BuildContext context) {
@@ -130,11 +131,11 @@ class HomeScreen extends StatelessWidget {
             right: -20,
             top: -20,
             child: Container(
-              width: 100,
-              height: 100,
+              width: 120,
+              height: 120,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withValues(alpha: 0.1),
+                color: Colors.white.withValues(alpha: 0.08),
               ),
             ),
           ),
@@ -152,12 +153,25 @@ class HomeScreen extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  Icon(Icons.visibility, color: Colors.white.withValues(alpha: 0.7), size: 18),
+                  Row(
+                    children: [
+                      const Icon(Icons.trending_up, color: AppColors.success, size: 16),
+                      const SizedBox(width: 4),
+                      Text(
+                        '+₹2,450 (1.8%)',
+                        style: const TextStyle(
+                          color: AppColors.success,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
               const SizedBox(height: AppSpacing.s),
               const Text(
-                '\$12,450.00',
+                '₹14,45,250',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 36,
@@ -168,9 +182,9 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: AppSpacing.l),
               Row(
                 children: [
-                  _buildHoldingChip('Gold', '24.5g', Icons.workspace_premium),
+                  Expanded(child: _buildHoldingCard('Gold', '24.5g', '₹9,40,000', '+2.4%', AppColors.gold)),
                   const SizedBox(width: AppSpacing.m),
-                  _buildHoldingChip('Silver', '1.2kg', Icons.layers),
+                  Expanded(child: _buildHoldingCard('Silver', '1.2kg', '₹5,05,250', '-0.5%', AppColors.silver)),
                 ],
               ),
             ],
@@ -180,26 +194,43 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHoldingChip(String label, String value, IconData icon) {
+  Widget _buildHoldingCard(String label, String qty, String value, String change, Color color) {
+    bool isPositive = change.startsWith('+');
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+        color: Colors.white.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: Colors.white, size: 16),
-          const SizedBox(width: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                label,
+                style: const TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                change,
+                style: TextStyle(
+                  color: isPositive ? AppColors.success : AppColors.error,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
           Text(
-            '$label: $value',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-            ),
+            value,
+            style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w800),
+          ),
+          Text(
+            qty,
+            style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 10, fontWeight: FontWeight.bold),
           ),
         ],
       ),
@@ -321,7 +352,7 @@ class HomeScreen extends StatelessWidget {
 
   Widget _buildActionButton(String label, IconData icon, Color color) {
     return InkWell(
-      onTap: () {},
+      onTap: onTrade,
       borderRadius: BorderRadius.circular(20),
       child: Column(
         children: [
@@ -376,7 +407,7 @@ class HomeScreen extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.s),
         _buildTransactionItem('Gold Purchase', 'Today, 14:20', '+\$520.00', true),
-        _buildTransactionItem('Silver Sale', 'Yesterday, 09:15', '-\$120.00', false),
+        _buildTransactionItem('Silver Purchase', 'Yesterday, 09:15', '+\$120.00', true),
         _buildTransactionItem('Deposit', 'Mon, 10:00', '+\$1,000.00', true),
       ],
     );
