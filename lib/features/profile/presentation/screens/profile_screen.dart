@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/constants.dart';
+import '../../../../core/widgets/classic_section_header.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -8,144 +9,145 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Stack(
-        children: [
-          // Mesh Background
-          Positioned(
-            top: -50,
-            left: -50,
-            child: Container(
-              width: 250,
-              height: 250,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.primary.withValues(alpha: 0.05),
-              ),
-            ),
-          ),
-          SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(AppSpacing.m),
-              child: Column(
-                children: [
-                  const SizedBox(height: AppSpacing.m),
-                  _buildProfileHeader(),
-                  const SizedBox(height: AppSpacing.xl),
-                  _buildWalletCard(),
-                  const SizedBox(height: AppSpacing.xl),
-                  _buildMenuSection('Account', [
-                    _MenuItemData(Icons.person_outline, 'Personal Information', 'Name, Email, Phone'),
-                    _MenuItemData(Icons.account_balance_wallet_outlined, 'Bank Accounts', 'Manage linked banks'),
-                  ]),
-                  const SizedBox(height: AppSpacing.l),
-                  _buildMenuSection('Security', [
-                    _MenuItemData(Icons.lock_outline, 'Change Password', 'Secure your account'),
-                    _MenuItemData(Icons.verified_user_outlined, 'KYC Verification', 'Verify your identity'),
-                  ]),
-                  const SizedBox(height: AppSpacing.l),
-                  _buildMenuSection('Other', [
-                    _MenuItemData(Icons.help_outline, 'Help & Support', 'FAQs and contact us'),
-                    _MenuItemData(Icons.logout, 'Logout', 'Sign out of your account', isDestructive: true),
-                  ]),
-                  const SizedBox(height: AppSpacing.xxl),
-                ],
-              ),
-            ),
-          ),
-        ],
+      appBar: AppBar(
+        title: const Text(
+          'MY PROFILE',
+          style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.gold, letterSpacing: 1.0),
+        ),
+        backgroundColor: AppColors.primary,
+        elevation: 0,
+        centerTitle: false,
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildProfileHeader(),
+            const SizedBox(height: AppSpacing.l),
+            _buildWalletCard(),
+            const SizedBox(height: AppSpacing.l),
+            _buildMenuSection('ACCOUNT DETAILS', [
+              _MenuItemData(Icons.person, 'PERSONAL INFORMATION', 'Name, Email, Phone'),
+              _MenuItemData(Icons.account_balance, 'BANK ACCOUNTS', 'Manage linked banks'),
+            ]),
+            const SizedBox(height: AppSpacing.l),
+            _buildMenuSection('SECURITY & KYC', [
+              _MenuItemData(Icons.lock, 'CHANGE PASSWORD', 'Secure your account'),
+              _MenuItemData(Icons.verified_user, 'KYC VERIFICATION', 'Verify your identity'),
+            ]),
+            const SizedBox(height: AppSpacing.l),
+            _buildMenuSection('SUPPORT & OPTIONS', [
+              _MenuItemData(Icons.help, 'HELP & SUPPORT', 'FAQs and contact us'),
+              _MenuItemData(Icons.power_settings_new, 'LOGOUT', 'Sign out of your account', isDestructive: true),
+            ]),
+            const SizedBox(height: AppSpacing.xxl),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildProfileHeader() {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(4),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(color: AppColors.primary.withValues(alpha: 0.2), width: 2),
+    return Container(
+      width: double.infinity,
+      color: AppColors.primaryDark,
+      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+      child: Row(
+        children: [
+          Container(
+            width: 72,
+            height: 72,
+            decoration: BoxDecoration(
+              color: AppColors.primary,
+              border: Border.all(color: AppColors.gold, width: 2),
+            ),
+            child: const Center(
+              child: Text('JT', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: AppColors.gold)),
+            ),
           ),
-          child: const CircleAvatar(
-            radius: 50,
-            backgroundColor: AppColors.primary,
-            child: Text('JT', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white)),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'JAMES THOMPSON',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1.0),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  'james.t@example.com',
+                  style: TextStyle(color: AppColors.gold, fontSize: 12, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  'ID: MKT-8932',
+                  style: TextStyle(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: AppSpacing.m),
-        const Text('James Thompson', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, letterSpacing: -0.5)),
-        const SizedBox(height: 4),
-        const Text('james.t@example.com', style: TextStyle(color: AppColors.textSecondary, fontSize: 14)),
-      ],
+        ],
+      ),
     );
   }
 
   Widget _buildWalletCard() {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.l),
-      decoration: BoxDecoration(
-        gradient: AppColors.cardGradient,
-        borderRadius: BorderRadius.circular(32),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.3),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: AppColors.primary.withValues(alpha: 0.1)),
+        ),
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16),
+              color: AppColors.primaryLight,
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Wallet Balance', style: TextStyle(color: Colors.white70, fontSize: 14)),
-                  Text('\$4,520.00', style: TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold, letterSpacing: -1)),
+                  Text('FUNDS BALANCE', style: TextStyle(color: AppColors.primaryDark, fontWeight: FontWeight.bold, fontSize: 12)),
+                  Icon(Icons.account_balance_wallet, color: AppColors.primaryDark, size: 20),
                 ],
               ),
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.account_balance_wallet, color: Colors.white, size: 28),
+            ),
+            Container(
+              padding: const EdgeInsets.all(24),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('₹', style: TextStyle(color: AppColors.textSecondary, fontSize: 24, fontWeight: FontWeight.bold)),
+                  SizedBox(width: 8),
+                  Text('4,52,000.00', style: TextStyle(color: AppColors.textPrimary, fontSize: 32, fontWeight: FontWeight.bold, letterSpacing: -1)),
+                ],
               ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.l),
-          Row(
-            children: [
-              Expanded(child: _buildWalletAction('Deposit', Icons.add_rounded)),
-              const SizedBox(width: AppSpacing.m),
-              Expanded(child: _buildWalletAction('Withdraw', Icons.remove_rounded)),
-            ],
-          ),
-        ],
+            ),
+            const Divider(height: 1, color: AppColors.silverLight),
+            Row(
+              children: [
+                Expanded(child: _buildWalletAction('DEPOSIT', Icons.add_circle, AppColors.success)),
+                Container(width: 1, height: 48, color: AppColors.silverLight),
+                Expanded(child: _buildWalletAction('WITHDRAW', Icons.remove_circle, AppColors.error)),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildWalletAction(String label, IconData icon) {
-    return Container(
-      height: 50,
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.2),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
-      ),
-      child: InkWell(
-        onTap: () {},
-        borderRadius: BorderRadius.circular(16),
+  Widget _buildWalletAction(String label, IconData icon, Color color) {
+    return InkWell(
+      onTap: () {},
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: Colors.white, size: 20),
+            Icon(icon, color: color, size: 18),
             const SizedBox(width: 8),
-            Text(label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            Text(label, style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 12)),
           ],
         ),
       ),
@@ -156,56 +158,45 @@ class ProfileScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(left: AppSpacing.s, bottom: AppSpacing.m),
-          child: Text(
-            title.toUpperCase(),
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w800,
-              color: AppColors.textSecondary,
-              letterSpacing: 1.5,
-            ),
+        ClassicSectionHeader(title: title),
+        Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            border: Border.symmetric(horizontal: BorderSide(color: AppColors.silverLight)),
+          ),
+          child: Column(
+            children: items.map((item) => _buildMenuItem(item)).toList(),
           ),
         ),
-        ...items.map((item) => _buildMenuItem(item)),
       ],
     );
   }
 
   Widget _buildMenuItem(_MenuItemData item) {
     return Container(
-      margin: const EdgeInsets.only(bottom: AppSpacing.m),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+      decoration: const BoxDecoration(
+        border: Border(bottom: BorderSide(color: AppColors.silverLight)),
       ),
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.m, vertical: 4),
-        leading: Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: (item.isDestructive ? AppColors.error : AppColors.primary).withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Icon(item.icon, color: item.isDestructive ? AppColors.error : AppColors.primary, size: 22),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        leading: Icon(
+          item.icon,
+          color: item.isDestructive ? AppColors.error : AppColors.primary,
+          size: 24,
         ),
         title: Text(
           item.title,
           style: TextStyle(
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.bold,
+            fontSize: 13,
             color: item.isDestructive ? AppColors.error : AppColors.textPrimary,
           ),
         ),
-        subtitle: Text(item.subtitle, style: const TextStyle(fontSize: 12)),
-        trailing: const Icon(Icons.chevron_right_rounded, color: AppColors.textSecondary, size: 20),
+        subtitle: Text(
+          item.subtitle,
+          style: const TextStyle(fontSize: 11, color: AppColors.textSecondary, fontWeight: FontWeight.bold),
+        ),
+        trailing: const Icon(Icons.arrow_forward_ios, color: AppColors.silverLight, size: 14),
         onTap: () {},
       ),
     );

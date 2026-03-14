@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/constants.dart';
+import '../../../../core/widgets/classic_action_button.dart';
 
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
@@ -28,45 +29,41 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text('Trading Orders', style: TextStyle(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.white,
+        title: const Text(
+          'TRADING ORDERS',
+          style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.gold, letterSpacing: 1.0),
+        ),
+        backgroundColor: AppColors.primary,
         elevation: 0,
         centerTitle: false,
-      ),
-      body: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.m, vertical: AppSpacing.s),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              border: Border(bottom: BorderSide(color: Color(0xFFF1F5F9))),
-            ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(48),
+          child: Container(
+            color: AppColors.primaryDark,
             child: TabBar(
               controller: _tabController,
               tabs: const [
-                Tab(text: 'Active'),
-                Tab(text: 'Completed'),
-                Tab(text: 'Cancelled'),
+                Tab(text: 'ACTIVE'),
+                Tab(text: 'COMPLETED'),
+                Tab(text: 'CANCELLED'),
               ],
-              labelColor: AppColors.primary,
-              unselectedLabelColor: AppColors.textSecondary,
-              indicatorColor: AppColors.primary,
+              labelColor: AppColors.gold,
+              unselectedLabelColor: Colors.white54,
+              indicatorColor: AppColors.gold,
               indicatorWeight: 3,
-              indicatorSize: TabBarIndicatorSize.label,
-              labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-              unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
+              indicatorSize: TabBarIndicatorSize.tab,
+              labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+              unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
             ),
           ),
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                _buildOrdersList('Active'),
-                _buildOrdersList('Completed'),
-                _buildOrdersList('Cancelled'),
-              ],
-            ),
-          ),
+        ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          _buildOrdersList('Active'),
+          _buildOrdersList('Completed'),
+          _buildOrdersList('Cancelled'),
         ],
       ),
     );
@@ -76,17 +73,17 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
     final List<_OrderData> orders;
     if (type == 'Active') {
       orders = [
-        _OrderData('GOLD MCX', '71,000', '10g', '71,240', 'Pending', AppColors.gold, DateTime.now()),
-        _OrderData('SILVER MCX', '73,500', '1kg', '74,180', 'Executing', AppColors.silver, DateTime.now()),
+        _OrderData('GOLD MCX', '71,000', '10g', '71,240', 'PENDING', AppColors.gold, DateTime.now()),
+        _OrderData('SILVER MCX', '73,500', '1kg', '74,180', 'EXECUTING', AppColors.silver, DateTime.now()),
       ];
     } else if (type == 'Completed') {
       orders = [
-        _OrderData('GOLD 999', '70,500', '5g', '70,500', 'Completed', AppColors.gold, DateTime.now().subtract(const Duration(days: 1))),
-        _OrderData('GOLD MCX', '71,000', '2g', '71,000', 'Completed', AppColors.gold, DateTime.now().subtract(const Duration(days: 2))),
+        _OrderData('GOLD 999', '70,500', '5g', '70,500', 'COMPLETED', AppColors.gold, DateTime.now().subtract(const Duration(days: 1))),
+        _OrderData('GOLD MCX', '71,000', '2g', '71,000', 'COMPLETED', AppColors.gold, DateTime.now().subtract(const Duration(days: 2))),
       ];
     } else {
       orders = [
-        _OrderData('SILVER DELHI', '75,000', '500g', '74,200', 'Cancelled', AppColors.silver, DateTime.now().subtract(const Duration(hours: 5))),
+        _OrderData('SILVER DELHI', '75,000', '500g', '74,200', 'CANCELLED', AppColors.silver, DateTime.now().subtract(const Duration(hours: 5))),
       ];
     }
 
@@ -95,9 +92,9 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.receipt_long_outlined, size: 64, color: AppColors.textSecondary.withValues(alpha: 0.2)),
+            Icon(Icons.receipt_long, size: 64, color: AppColors.textSecondary.withValues(alpha: 0.5)),
             const SizedBox(height: 16),
-            Text('No $type orders found', style: const TextStyle(color: AppColors.textSecondary)),
+            Text('NO ${type.toUpperCase()} ORDERS', style: const TextStyle(color: AppColors.textSecondary, fontWeight: FontWeight.bold)),
           ],
         ),
       );
@@ -119,33 +116,24 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.1)),
+        borderRadius: BorderRadius.circular(4),
       ),
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
+          Container(
+            padding: const EdgeInsets.all(12),
+            color: AppColors.primaryLight,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
                   children: [
-                    Container(
-                      width: 8,
-                      height: 8,
-                      decoration: BoxDecoration(color: order.color, shape: BoxShape.circle),
-                    ),
-                    const SizedBox(width: 12),
+                    Icon(Icons.circle, color: order.color, size: 12),
+                    const SizedBox(width: 8),
                     Text(
                       order.metal,
-                      style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16, letterSpacing: -0.5),
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppColors.primaryDark),
                     ),
                   ],
                 ),
@@ -153,20 +141,27 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
               ],
             ),
           ),
-          const Divider(height: 1, color: Color(0xFFF1F5F9)),
           Padding(
             padding: const EdgeInsets.all(16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildMetric(isActive ? 'Target Price' : (isCancelled ? 'Target Price' : 'Bought at'), '₹${order.targetPrice}'),
-                _buildMetric('Quantity', order.qty),
-                _buildMetric(isActive ? 'Current Price' : 'Total', isActive ? '₹${order.currentPrice}' : '₹${order.total}'),
+                _buildMetric(isActive ? 'TARGET PRICE' : (isCancelled ? 'TARGET PRICE' : 'BOUGHT AT'), '₹${order.targetPrice}'),
+                _buildMetric('QUANTITY', order.qty),
+                _buildMetric(isActive ? 'LTP' : 'TOTAL', isActive ? '₹${order.currentPrice}' : '₹${order.total}', isHighlight: true),
               ],
             ),
           ),
           if (isActive)
-            _buildCancelButton()
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: ClassicActionButton(
+                label: 'CANCEL ORDER',
+                icon: Icons.cancel,
+                color: AppColors.error,
+                onTap: () {},
+              ),
+            )
           else
             _buildDateFooter(order.date),
         ],
@@ -180,59 +175,48 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
     if (type == 'Cancelled') color = AppColors.error;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(8),
+        color: color,
+        borderRadius: BorderRadius.circular(4),
       ),
       child: Text(
-        status.toUpperCase(),
-        style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+        status,
+        style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
       ),
     );
   }
 
-  Widget _buildMetric(String label, String value) {
+  Widget _buildMetric(String label, String value, {bool isHighlight = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(color: AppColors.textSecondary, fontSize: 11, fontWeight: FontWeight.bold)),
+        Text(label, style: const TextStyle(color: AppColors.textSecondary, fontSize: 10, fontWeight: FontWeight.bold)),
         const SizedBox(height: 4),
-        Text(value, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15)),
-      ],
-    );
-  }
-
-  Widget _buildCancelButton() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      child: OutlinedButton(
-        onPressed: () {},
-        style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.error,
-          side: const BorderSide(color: Color(0xFFFEE2E2)),
-          backgroundColor: const Color(0xFFFEF2F2),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          padding: const EdgeInsets.symmetric(vertical: 12),
+        Text(
+          value,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: isHighlight ? 18 : 16,
+            color: isHighlight ? AppColors.primaryDark : AppColors.textPrimary,
+          ),
         ),
-        child: const Text('CANCEL ORDER', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-      ),
+      ],
     );
   }
 
   Widget _buildDateFooter(DateTime date) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       decoration: const BoxDecoration(
-        color: Color(0xFFF8FAFC),
-        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(24), bottomRight: Radius.circular(24)),
+        color: AppColors.background,
+        border: Border(top: BorderSide(color: Colors.black12)),
       ),
       child: Text(
-        'Processed on ${date.day} Mar 2026, ${date.hour}:${date.minute.toString().padLeft(2, '0')}',
-        style: const TextStyle(color: AppColors.textSecondary, fontSize: 11, fontWeight: FontWeight.w500),
-        textAlign: TextAlign.center,
+        'PROCESSED: ${date.day} MAR 2026, ${date.hour}:${date.minute.toString().padLeft(2, '0')}',
+        style: const TextStyle(color: AppColors.textSecondary, fontSize: 10, fontWeight: FontWeight.bold),
+        textAlign: TextAlign.right,
       ),
     );
   }
@@ -247,7 +231,7 @@ class _OrderData {
   final Color color;
   final DateTime date;
 
-  String get total => '7,12,400'; // Mock logic
+  String get total => '7,12,400';
 
   _OrderData(this.metal, this.targetPrice, this.qty, this.currentPrice, this.status, this.color, this.date);
 }

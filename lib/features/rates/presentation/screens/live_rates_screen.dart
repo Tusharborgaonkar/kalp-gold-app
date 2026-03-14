@@ -29,476 +29,223 @@ class _LiveRatesScreenState extends State<LiveRatesScreen> with SingleTickerProv
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text(
-          'Live Market Rates',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: AppColors.textPrimary,
-            fontSize: 22,
-            letterSpacing: -0.5,
-          ),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'SUVIDHI JEWELEX', // Replace with dynamic if needed
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: AppColors.gold,
+                fontSize: 20,
+                letterSpacing: 1.0,
+              ),
+            ),
+            Text(
+              'LIVE RATES',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: AppColors.gold.withValues(alpha: 0.8),
+                fontSize: 12,
+                letterSpacing: 2.0,
+              ),
+            ),
+          ],
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.primary, // Dark Navy Blue
         elevation: 0,
         centerTitle: false,
         actions: [
           IconButton(
             onPressed: () {},
-            icon: const Icon(Icons.refresh_rounded, color: AppColors.primary),
+            icon: const Icon(Icons.refresh_rounded, color: AppColors.gold),
           ),
         ],
       ),
-      body: Column(
-        children: [
-          _buildTicker(),
-          _buildTabs(),
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                _buildRatesView('GOLD', AppColors.gold, AppColors.goldGradient),
-                _buildRatesView('SILVER', AppColors.silver, AppColors.silverGradient),
-              ],
-            ),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => widget.onTrade?.call(null), // Navigate to Trade
-        backgroundColor: AppColors.primary,
-        icon: const Icon(Icons.add_shopping_cart, color: Colors.white),
-        label: const Text('QUICK BUY', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-      ),
-    );
-  }
-
-  Widget _buildTicker() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha: 0.05),
-        border: const Border(bottom: BorderSide(color: Color(0xFFE5E7EB))),
-      ),
-      child: const SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: Column(
           children: [
-            SizedBox(width: 20),
-            _TickerItem(label: 'MCX GOLD', value: '62,450', change: '+120', isUp: true),
-            SizedBox(width: 30),
-            _TickerItem(label: 'MCX SILVER', value: '74,200', change: '-450', isUp: false),
-            SizedBox(width: 30),
-            _TickerItem(label: 'USD/INR', value: '83.12', change: '+0.05', isUp: true),
-            SizedBox(width: 20),
+            _buildMarketIndicators(),
+            _buildPriceBoard(),
+            const SizedBox(height: 80), // Padding for Floating Action Buttons
+          ],
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            FloatingActionButton(
+              heroTag: 'callBtn',
+              onPressed: () {},
+              backgroundColor: AppColors.error, // Red for Call
+              child: const Icon(Icons.phone, color: Colors.white, size: 28),
+            ),
+            FloatingActionButton(
+              heroTag: 'waBtn',
+              onPressed: () {},
+              backgroundColor: AppColors.success, // Green for WhatsApp
+              child: const Icon(Icons.chat, color: Colors.white, size: 28), // Placeholder for WA icon
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildTabs() {
+  Widget _buildMarketIndicators() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.m, vertical: AppSpacing.s),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: TabBar(
-        controller: _tabController,
-        tabs: const [
-          Tab(text: 'GOLD LIVE'),
-          Tab(text: 'SILVER LIVE'),
-        ],
-        labelColor: AppColors.primary,
-        unselectedLabelColor: AppColors.textSecondary,
-        indicatorColor: AppColors.primary,
-        indicatorWeight: 3,
-        indicatorSize: TabBarIndicatorSize.label,
-        labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-        unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
-      ),
-    );
-  }
-
-  Widget _buildRatesView(String metal, Color metalColor, LinearGradient gradient) {
-    return ListView(
-      physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.all(AppSpacing.m),
-      children: [
-        _buildSpotlight(metal, metalColor, gradient),
-        const SizedBox(height: 24),
-        _buildRatesTable(metal, metalColor),
-        const SizedBox(height: 24),
-        _buildComexSection(),
-        const SizedBox(height: 32),
-      ],
-    );
-  }
-
-  Widget _buildSpotlight(String metal, Color metalColor, LinearGradient gradient) {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(32),
-        boxShadow: [
-          BoxShadow(
-            color: metalColor.withValues(alpha: 0.1),
-            blurRadius: 30,
-            offset: const Offset(0, 15),
-          ),
-        ],
-      ),
-      child: Column(
+      color: AppColors.primaryLight,
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text(
-            'MCX $metal SPOT',
-            style: const TextStyle(
-              color: AppColors.textSecondary,
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1,
-            ),
-          ),
-          const SizedBox(height: 12),
-          ShaderMask(
-            shaderCallback: (bounds) => gradient.createShader(bounds),
-            child: Text(
-              metal == 'GOLD' ? '62,410' : '74,180',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 48,
-                fontWeight: FontWeight.w900,
-                letterSpacing: -1,
-              ),
-            ),
-          ),
-          const SizedBox(height: 24),
-          Row(
-            children: [
-              _buildSpotlightMiniItem('HIGH', metal == 'GOLD' ? '62,580' : '74,500', AppColors.success),
-              const SizedBox(width: 12),
-              _buildSpotlightMiniItem('LOW', metal == 'GOLD' ? '62,320' : '73,900', AppColors.error),
-            ],
-          ),
+          _buildIndicatorCard('GOLD COMEX', '2045.50', '2030.10 | 2051.80'),
+          _buildIndicatorCard('SILVER COMEX', '23.12', '22.90 | 23.45'),
+          _buildIndicatorCard('USD INR', '83.12', '83.05 | 83.20'),
         ],
       ),
     );
   }
 
-  Widget _buildSpotlightMiniItem(String label, String value, Color color) {
+  Widget _buildIndicatorCard(String title, String value, String highLow) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        margin: const EdgeInsets.symmetric(horizontal: 4),
+        padding: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.05),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: color.withValues(alpha: 0.1)),
+          color: AppColors.primaryDark,
+          borderRadius: BorderRadius.circular(4),
+          border: Border.all(color: AppColors.primary.withValues(alpha: 0.5)),
         ),
         child: Column(
           children: [
             Text(
-              label,
-              style: TextStyle(color: color.withValues(alpha: 0.6), fontSize: 11, fontWeight: FontWeight.bold),
+              title,
+              style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 4),
             Text(
               value,
-              style: TextStyle(color: color, fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
             ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildRatesTable(String metal, Color metalColor) {
-        final products = metal == 'GOLD'
-        ? [
-            {'name': 'GOLD 999 (10 GM)', 'buy': '62,410'},
-            {'name': 'GOLD 995 (10 GM)', 'buy': '62,310'},
-            {'name': 'GOLD RTGS', 'buy': '62,400'},
-          ]
-        : [
-            {'name': 'SILVER 999 (1 KG)', 'buy': '74,180'},
-            {'name': 'SILVER RTGS', 'buy': '74,170'},
-          ];
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
+            const SizedBox(height: 4),
             Text(
-              'PHYSICAL MARKET',
-              style: TextStyle(
-                color: AppColors.textPrimary.withValues(alpha: 0.8),
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.5,
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: metalColor.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                'LIVE',
-                style: TextStyle(color: metalColor, fontSize: 10, fontWeight: FontWeight.bold),
-              ),
+              highLow,
+              style: const TextStyle(color: Colors.white54, fontSize: 8),
+              textAlign: TextAlign.center,
             ),
           ],
         ),
-        const SizedBox(height: 16),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(24),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.03),
-                blurRadius: 15,
-                offset: const Offset(0, 5),
-              ),
-            ],
-          ),
-          child: Table(
-            columnWidths: const {
-              0: FlexColumnWidth(3),
-              1: FlexColumnWidth(1.5),
-              2: IntrinsicColumnWidth(),
-            },
-            children: [
-              TableRow(
-                decoration: BoxDecoration(
-                  color: AppColors.background.withValues(alpha: 0.5),
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(24),
-                    topRight: Radius.circular(24),
-                  ),
-                ),
-                children: [
-                  _buildTableHeader('PRODUCT'),
-                  _buildTableHeader('BUY PRICE'),
-                  const SizedBox(), // Spacer for BUY button
-                ],
-              ),
-              ...products.map((p) => TableRow(
-                    children: [
-                      _buildTableCell(p['name']!, isBold: true),
-                      _buildTableCell(p['buy']!, color: AppColors.success),
-                      _buildQuickBuyButton(p['name']!),
-                    ],
-                  )),
-            ],
-          ),
-        ),
-      ],
+      ),
     );
   }
 
-  Widget _buildTableHeader(String text) {
+  Widget _buildPriceBoard() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-      child: Text(
-        text,
-        style: const TextStyle(
-          color: AppColors.textSecondary,
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTableCell(String text, {Color? color, bool isBold = false}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: color ?? AppColors.textPrimary,
-          fontSize: 13,
-          fontWeight: isBold ? FontWeight.bold : FontWeight.w600,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildQuickBuyButton(String name) {
-    // Map product names to consistent TradeScreen keys
-    String? tradeKey;
-    if (name.contains('GOLD 999')) tradeKey = 'GOLD 999';
-    if (name.contains('GOLD 995')) tradeKey = 'GOLD 995';
-    if (name.contains('GOLD RTGS')) tradeKey = 'GOLD MCX';
-    if (name.contains('SILVER 999')) tradeKey = 'SILVER MCX';
-    if (name.contains('SILVER RTGS')) tradeKey = 'SILVER MCX';
-
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: TextButton(
-        onPressed: () => widget.onTrade?.call(tradeKey),
-        style: TextButton.styleFrom(
-          backgroundColor: AppColors.success.withValues(alpha: 0.1),
-          foregroundColor: AppColors.success,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-        ),
-        child: const Text('BUY', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11)),
-      ),
-    );
-  }
-
-  Widget _buildComexSection() {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            AppColors.primary.withValues(alpha: 0.1),
-            AppColors.primary.withValues(alpha: 0.05),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.primary.withValues(alpha: 0.1)),
-      ),
+      padding: const EdgeInsets.all(8.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              const Icon(Icons.public_rounded, color: AppColors.primary, size: 20),
-              const SizedBox(width: 8),
-              const Flexible(
-                child: Text(
-                  'COMEX INTERNATIONAL',
-                  style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 13),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              const Spacer(),
-              _buildPulsingDot(),
-            ],
-          ),
-          const SizedBox(height: 20),
-          const Row(
+          _buildProductCategory('GOLD PRODUCT', [
+            {'category': 'GOLD', 'name': 'GOLD 999 LOCAL', 'price': '163533', 'active': true},
+            {'category': 'GOLD', 'name': 'GOLD 999 INDIAN T+1', 'price': '163636', 'active': true},
+            {'category': 'GOLD', 'name': 'GOLD 999 IMP T+1', 'price': '164182', 'active': true},
+          ]),
+          const SizedBox(height: 8),
+          _buildProductCategory('SILVER PRODUCT', [
+            {'category': 'SILVER', 'name': 'Silver T+1', 'price': '268218', 'active': true},
+            {'category': 'SILVER', 'name': '30 kg T+1', 'price': '268270', 'active': true},
+          ]),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProductCategory(String title, List<Map<String, dynamic>> products) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Category Header
+        Container(
+          color: AppColors.goldLight,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(child: _ComexItem(label: 'GOLD USD', value: '2,045.50', change: '+12.40')),
-              SizedBox(width: 16),
-              Expanded(child: _ComexItem(label: 'SILVER USD', value: '23.12', change: '-0.15')),
+              Text(
+                title,
+                style: const TextStyle(color: AppColors.primaryDark, fontWeight: FontWeight.bold, fontSize: 14),
+              ),
+              const Text(
+                'BUY',
+                style: TextStyle(color: AppColors.primaryDark, fontWeight: FontWeight.bold, fontSize: 14),
+              ),
             ],
           ),
-        ],
-      ),
+        ),
+        // Product Rows
+        ...products.map((p) => _buildProductRow(p)).toList(),
+      ],
     );
   }
 
-  Widget _buildPulsingDot() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 8,
-            height: 8,
-            decoration: const BoxDecoration(
-              color: AppColors.error,
-              shape: BoxShape.circle,
+  Widget _buildProductRow(Map<String, dynamic> product) {
+    return InkWell(
+      onTap: () {
+        // Map to existing Trade keys if necessary
+        String? tradeKey;
+        if (product['name'].contains('GOLD 999')) tradeKey = 'GOLD 999';
+        if (product['name'].contains('Silver T+1')) tradeKey = 'SILVER MCX';
+        widget.onTrade?.call(tradeKey);
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(bottom: BorderSide(color: AppColors.background, width: 2)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              flex: 2,
+              child: Text(
+                product['name'],
+                style: const TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
-          ),
-          const SizedBox(width: 6),
-          const Text(
-            'LIVE',
-            style: TextStyle(color: AppColors.textPrimary, fontSize: 10, fontWeight: FontWeight.bold),
-          ),
-        ],
+            Expanded(
+              flex: 1,
+              child: Text(
+                product['price'],
+                style: const TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -0.5,
+                ),
+                textAlign: TextAlign.right,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Icon(
+              product['active'] ? Icons.check_circle : Icons.remove_circle,
+              color: product['active'] ? AppColors.success : AppColors.textSecondary,
+              size: 24,
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-class _TickerItem extends StatelessWidget {
-  final String label;
-  final String value;
-  final String change;
-  final bool isUp;
-
-  const _TickerItem({
-    required this.label,
-    required this.value,
-    required this.change,
-    required this.isUp,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text(
-          label,
-          style: const TextStyle(color: AppColors.textSecondary, fontSize: 12, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(width: 8),
-        Text(
-          value,
-          style: const TextStyle(color: AppColors.textPrimary, fontSize: 13, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(width: 4),
-        Text(
-          change,
-          style: TextStyle(
-            color: isUp ? AppColors.success : AppColors.error,
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _ComexItem extends StatelessWidget {
-  final String label;
-  final String value;
-  final String change;
-
-  const _ComexItem({required this.label, required this.value, required this.change});
-
-  @override
-  Widget build(BuildContext context) {
-    bool isUp = change.startsWith('+');
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label, style: const TextStyle(color: AppColors.textSecondary, fontSize: 12, fontWeight: FontWeight.bold), maxLines: 1, overflow: TextOverflow.ellipsis),
-        const SizedBox(height: 6),
-        Text(value, style: const TextStyle(color: AppColors.textPrimary, fontSize: 24, fontWeight: FontWeight.w900, letterSpacing: -0.5), maxLines: 1, overflow: TextOverflow.ellipsis),
-        const SizedBox(height: 2),
-        Text(
-          change,
-          style: TextStyle(color: isUp ? AppColors.success : AppColors.error, fontSize: 14, fontWeight: FontWeight.bold),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ],
-    );
-  }
-}

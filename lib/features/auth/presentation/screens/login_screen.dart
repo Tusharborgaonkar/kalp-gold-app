@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/constants.dart';
+import '../../../../core/widgets/classic_action_button.dart';
 import 'signup_screen.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -9,134 +10,144 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Stack(
-        children: [
-          // Mesh Background
-          Positioned(
-            top: -100,
-            right: -100,
-            child: Container(
-              width: 300,
-              height: 300,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.primary.withValues(alpha: 0.1),
+      appBar: AppBar(
+        title: const Text(
+          'LOGIN',
+          style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.gold, letterSpacing: 1.0),
+        ),
+        backgroundColor: AppColors.primary,
+        elevation: 0,
+        centerTitle: true,
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.l, vertical: AppSpacing.xxl),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(height: AppSpacing.xxl),
+              _buildLogo(),
+              const SizedBox(height: AppSpacing.xxl),
+              Text(
+                'MEMBER LOGIN',
+                style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primaryDark,
+                  letterSpacing: 1.0,
+                ),
+                textAlign: TextAlign.center,
               ),
-            ),
-          ),
-          Positioned(
-            bottom: -50,
-            left: -50,
-            child: Container(
-              width: 200,
-              height: 200,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.primaryLight.withValues(alpha: 0.1),
+              const SizedBox(height: 8),
+              const Text(
+                'ENTER CREDENTIALS TO CONTINUE',
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+                textAlign: TextAlign.center,
               ),
-            ),
-          ),
-          SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.l, vertical: AppSpacing.xxl),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              const SizedBox(height: AppSpacing.xxl),
+              const Text('MOBILE NUMBER / EMAIL', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 12)),
+              const SizedBox(height: 8),
+              TextField(
+                style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                decoration: InputDecoration(
+                  hintText: 'Enter your ID',
+                  hintStyle: const TextStyle(color: AppColors.silverLight),
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(0),
+                    borderSide: const BorderSide(color: AppColors.primary, width: 2),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(0),
+                    borderSide: BorderSide(color: AppColors.primary.withValues(alpha: 0.3), width: 1),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(0),
+                    borderSide: const BorderSide(color: AppColors.primary, width: 2),
+                  ),
+                  prefixIcon: const Icon(Icons.person, color: AppColors.primary),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.l),
+              const Text('PASSWORD', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 12)),
+              const SizedBox(height: 8),
+              TextField(
+                obscureText: true,
+                style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                decoration: InputDecoration(
+                  hintText: 'Enter your password',
+                  hintStyle: const TextStyle(color: AppColors.silverLight),
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(0),
+                    borderSide: const BorderSide(color: AppColors.primary, width: 2),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(0),
+                    borderSide: BorderSide(color: AppColors.primary.withValues(alpha: 0.3), width: 1),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(0),
+                    borderSide: const BorderSide(color: AppColors.primary, width: 2),
+                  ),
+                  prefixIcon: const Icon(Icons.lock, color: AppColors.primary),
+                  suffixIcon: const Icon(Icons.visibility_off, color: AppColors.silverLight),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.s),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () {},
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppColors.primary,
+                  ),
+                  child: const Text('FORGOT PASSWORD?', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xl),
+              ClassicActionButton(
+                label: 'SECURE LOGIN',
+                icon: Icons.login,
+                color: AppColors.primary,
+                iconColor: AppColors.gold,
+                onTap: () => Navigator.pushReplacementNamed(context, '/home'),
+              ),
+              const SizedBox(height: AppSpacing.xl),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(height: AppSpacing.xxl),
-                  _buildLogo(),
-                  const SizedBox(height: AppSpacing.xxl),
-                  Text(
-                    'Welcome back',
-                    style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 32),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Login to your account to continue',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  const SizedBox(height: AppSpacing.xxl),
-                  const TextField(
-                    decoration: InputDecoration(
-                      labelText: 'Mobile Number / Email',
-                      prefixIcon: Icon(Icons.person_outline_rounded, color: AppColors.primary),
+                  const Text("DON'T HAVE AN ACCOUNT? ", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.textSecondary)),
+                  GestureDetector(
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SignUpScreen())),
+                    child: const Text(
+                      'SIGN UP',
+                      style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 12, letterSpacing: 0.5),
                     ),
-                  ),
-                  const SizedBox(height: AppSpacing.m),
-                  const TextField(
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      prefixIcon: Icon(Icons.lock_outline_rounded, color: AppColors.primary),
-                      suffixIcon: Icon(Icons.visibility_off_outlined),
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.s),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {},
-                      child: const Text('Forgot Password?', style: TextStyle(fontWeight: FontWeight.w600)),
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xl),
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: AppColors.actionGradient,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.primary.withValues(alpha: 0.3),
-                          blurRadius: 15,
-                          offset: const Offset(0, 8),
-                        ),
-                      ],
-                    ),
-                    child: ElevatedButton(
-                      onPressed: () => Navigator.pushReplacementNamed(context, '/home'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.transparent,
-                        shadowColor: Colors.transparent,
-                      ),
-                      child: const Text('Login'),
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xl),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text("Don't have an account? "),
-                      GestureDetector(
-                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SignUpScreen())),
-                        child: const Text(
-                          'Sign Up',
-                          style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ],
                   ),
                 ],
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
   Widget _buildLogo() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-          ),
-        ],
+    return Center(
+      child: Container(
+        width: 80,
+        height: 80,
+        decoration: BoxDecoration(
+          color: AppColors.primary,
+          border: Border.all(color: AppColors.gold, width: 3),
+        ),
+        child: const Icon(Icons.show_chart, color: AppColors.gold, size: 48),
       ),
-      child: const Icon(Icons.auto_graph_rounded, color: AppColors.primary, size: 40),
     );
   }
 }
+

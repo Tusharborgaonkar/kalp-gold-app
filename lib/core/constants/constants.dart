@@ -1,31 +1,32 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  // Primary colors (Premium professional palette)
-  static const Color primary = Color(0xFF4F46E5);
-  static const Color primaryLight = Color(0xFF818CF8);
-  static const Color primaryDark = Color(0xFF3730A3);
+  // Primary colors (Classic Bullion Palette)
+  static const Color primary = Color(0xFF1B2C4E); // Deep Navy Blue
+  static const Color primaryLight = Color(0xFF2B3A5A);
+  static const Color primaryDark = Color(0xFF0D1B35);
 
   // Background colors
-  static const Color background = Color(0xFFF8FAFC);
-  static const Color backgroundEnd = Color(0xFFF1F5F9);
+  static const Color background = Color(0xFFEEEEEE); // Light Grey
+  static const Color backgroundEnd = Color(0xFFE0E0E0);
   static const Color white = Colors.white;
 
   // Metal colors
-  static const Color gold = Color(0xFFD4AF37);
-  static const Color goldLight = Color(0xFFF6D365);
-  static const Color silver = Color(0xFFA8A9AD);
-  static const Color silverLight = Color(0xFFE2E8F0);
+  static const Color gold = Color(0xFFD4AF37); // Metallic Gold
+  static const Color goldLight = Color(0xFFDAB951);
+  static const Color silver = Color(0xFFB0B0B0); // Silver
+  static const Color silverLight = Color(0xFFC0C0C0);
 
   // Text colors
-  static const Color textPrimary = Color(0xFF0F172A);
-  static const Color textSecondary = Color(0xFF64748B);
+  static const Color textPrimary = Color(0xFF111111);
+  static const Color textSecondary = Color(0xFF555555);
+  static const Color textLight = Colors.white;
 
-  // Status colors
-  static const Color success = Color(0xFF16A34A);
-  static const Color error = Color(0xFFDC2626);
+  // Status/Action colors
+  static const Color success = Color(0xFF28A745); // Green for active/up
+  static const Color error = Color(0xFFDC3545); // Red for down/call
 
-  // Gradients
+  // Gradients (Kept for compatibility if used elsewhere, but ideally avoid in classic UI)
   static const LinearGradient primaryGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
@@ -35,25 +36,25 @@ class AppColors {
   static const LinearGradient goldGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [gold, goldLight],
+    colors: [gold, gold], // Flattened for classic look
   );
 
   static const LinearGradient silverGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFF8E9196), Color(0xFFE2E8F0), Color(0xFF8E9196)],
+    colors: [silver, silver], // Flattened for classic look
   );
 
   static const LinearGradient cardGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFF4F46E5), Color(0xFF3730A3)],
+    colors: [primary, primaryDark],
   );
 
   static const LinearGradient actionGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFF4F46E5), Color(0xFF818CF8)],
+    colors: [success, success], // Flattened
   );
 
   static const LinearGradient backgroundGradient = LinearGradient(
