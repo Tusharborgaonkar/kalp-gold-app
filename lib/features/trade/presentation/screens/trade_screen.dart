@@ -283,7 +283,7 @@ class _TradeScreenState extends State<TradeScreen> {
           Row(
             children: [
               _modeTab('MARKET', true),
-              _modeTab('TARGET', false),
+              _modeTab('PENDING', false),
             ],
           ),
           Container(
@@ -404,7 +404,7 @@ class _TradeScreenState extends State<TradeScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('TARGET PRICE', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 12)),
+        const Text('PENDING PRICE', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 12)),
         const SizedBox(height: 8),
         TextField(
           controller: _targetPriceController,
@@ -436,7 +436,7 @@ class _TradeScreenState extends State<TradeScreen> {
           width: double.infinity,
           height: 56,
           child: ClassicActionButton(
-            label: 'PLACE TARGET ORDER',
+            label: 'PLACE PENDING ORDER',
             icon: Icons.gavel,
             onTap: _showConfirmation,
           ),
