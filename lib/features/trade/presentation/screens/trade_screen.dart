@@ -112,10 +112,6 @@ class _TradeScreenState extends State<TradeScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.gold),
-          onPressed: () => Navigator.pop(context),
-        ),
         title: InkWell(
           onTap: _showMetalSelector,
           child: Row(
@@ -287,7 +283,7 @@ class _TradeScreenState extends State<TradeScreen> {
           Row(
             children: [
               _modeTab('MARKET', true),
-              _modeTab('LIMIT', false),
+              _modeTab('TARGET', false),
             ],
           ),
           Container(
@@ -440,7 +436,7 @@ class _TradeScreenState extends State<TradeScreen> {
           width: double.infinity,
           height: 56,
           child: ClassicActionButton(
-            label: 'PLACE LIMIT ORDER',
+            label: 'PLACE TARGET ORDER',
             icon: Icons.gavel,
             onTap: _showConfirmation,
           ),

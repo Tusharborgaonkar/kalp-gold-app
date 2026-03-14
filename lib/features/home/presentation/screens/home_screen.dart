@@ -162,9 +162,9 @@ class HomeScreen extends StatelessWidget {
           child: const Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              ClassicRateCard(title: 'GOLD COMEX', value: '2045.50', highLow: '2030.10 | 2051.80'),
-              ClassicRateCard(title: 'SILVER COMEX', value: '23.12', highLow: '22.90 | 23.45'),
-              ClassicRateCard(title: 'USD INR', value: '83.12', highLow: '83.05 | 83.20'),
+              Expanded(child: ClassicRateCard(title: 'GOLD COMEX', value: '2045.50', highLow: '2030.10 | 2051.80')),
+              Expanded(child: ClassicRateCard(title: 'SILVER COMEX', value: '23.12', highLow: '22.90 | 23.45')),
+              Expanded(child: ClassicRateCard(title: 'USD INR', value: '83.12', highLow: '83.05 | 83.20')),
             ],
           ),
         ),

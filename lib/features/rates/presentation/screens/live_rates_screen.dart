@@ -1,28 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/constants.dart';
+import '../../../../core/widgets/classic_rate_card.dart';
+import '../../../../core/widgets/classic_section_header.dart';
 
-class LiveRatesScreen extends StatefulWidget {
+class LiveRatesScreen extends StatelessWidget {
   final Function(String?)? onTrade;
   const LiveRatesScreen({super.key, this.onTrade});
-
-  @override
-  State<LiveRatesScreen> createState() => _LiveRatesScreenState();
-}
-
-class _LiveRatesScreenState extends State<LiveRatesScreen> with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +16,7 @@ class _LiveRatesScreenState extends State<LiveRatesScreen> with SingleTickerProv
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'SUVIDHI JEWELEX', // Replace with dynamic if needed
+              'MCX LIVE RATES', // Replace with dynamic if needed
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: AppColors.gold,
@@ -66,6 +49,7 @@ class _LiveRatesScreenState extends State<LiveRatesScreen> with SingleTickerProv
         physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
+            const ClassicSectionHeader(title: 'LIVE MARKET RATES', backgroundColor: AppColors.goldLight),
             _buildMarketIndicators(),
             _buildPriceBoard(),
             const SizedBox(height: 80), // Padding for Floating Action Buttons
@@ -100,48 +84,13 @@ class _LiveRatesScreenState extends State<LiveRatesScreen> with SingleTickerProv
     return Container(
       color: AppColors.primaryLight,
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-      child: Row(
+      child: const Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildIndicatorCard('GOLD COMEX', '2045.50', '2030.10 | 2051.80'),
-          _buildIndicatorCard('SILVER COMEX', '23.12', '22.90 | 23.45'),
-          _buildIndicatorCard('USD INR', '83.12', '83.05 | 83.20'),
+          Expanded(child: ClassicRateCard(title: 'GOLD COMEX', value: '2045.50', highLow: '2030.10 | 2051.80')),
+          Expanded(child: ClassicRateCard(title: 'SILVER COMEX', value: '23.12', highLow: '22.90 | 23.45')),
+          Expanded(child: ClassicRateCard(title: 'USD INR', value: '83.12', highLow: '83.05 | 83.20')),
         ],
-      ),
-    );
-  }
-
-  Widget _buildIndicatorCard(String title, String value, String highLow) {
-    return Expanded(
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 4),
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        decoration: BoxDecoration(
-          color: AppColors.primaryDark,
-          borderRadius: BorderRadius.circular(4),
-          border: Border.all(color: AppColors.primary.withValues(alpha: 0.5)),
-        ),
-        child: Column(
-          children: [
-            Text(
-              title,
-              style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              value,
-              style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              highLow,
-              style: const TextStyle(color: Colors.white54, fontSize: 8),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -201,7 +150,7 @@ class _LiveRatesScreenState extends State<LiveRatesScreen> with SingleTickerProv
         String? tradeKey;
         if (product['name'].contains('GOLD 999')) tradeKey = 'GOLD 999';
         if (product['name'].contains('Silver T+1')) tradeKey = 'SILVER MCX';
-        widget.onTrade?.call(tradeKey);
+        onTrade?.call(tradeKey);
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
