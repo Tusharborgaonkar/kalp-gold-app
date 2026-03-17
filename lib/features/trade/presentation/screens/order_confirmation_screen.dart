@@ -30,7 +30,7 @@ class OrderConfirmationScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const ClassicSectionHeader(title: 'ORDER DETAILS'),
+            ClassicSectionHeader(title: 'ORDER DETAILS'),
             Container(
               color: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -47,7 +47,7 @@ class OrderConfirmationScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            const ClassicSectionHeader(title: 'PAYMENT METHOD'),
+            ClassicSectionHeader(title: 'PAYMENT METHOD'),
             Container(
               padding: const EdgeInsets.all(16),
               color: Colors.white,

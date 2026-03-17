@@ -3,7 +3,8 @@ import '../../../../core/constants/constants.dart';
 import '../../../../core/widgets/classic_section_header.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+  final VoidCallback? onLogout;
+  const ProfileScreen({super.key, this.onLogout});
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +38,7 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: AppSpacing.l),
             _buildMenuSection('SUPPORT & OPTIONS', [
               _MenuItemData(Icons.help, 'HELP & SUPPORT', 'FAQs and contact us'),
-              _MenuItemData(Icons.power_settings_new, 'LOGOUT', 'Sign out of your account', isDestructive: true),
+              _MenuItemData(Icons.power_settings_new, 'LOGOUT', 'Sign out of your account', isDestructive: true, onTap: onLogout),
             ]),
             const SizedBox(height: AppSpacing.xxl),
           ],
@@ -197,7 +198,7 @@ class ProfileScreen extends StatelessWidget {
           style: const TextStyle(fontSize: 11, color: AppColors.textSecondary, fontWeight: FontWeight.bold),
         ),
         trailing: const Icon(Icons.arrow_forward_ios, color: AppColors.silverLight, size: 14),
-        onTap: () {},
+        onTap: item.onTap ?? () {},
       ),
     );
   }
@@ -208,6 +209,7 @@ class _MenuItemData {
   final String title;
   final String subtitle;
   final bool isDestructive;
+  final VoidCallback? onTap;
 
-  _MenuItemData(this.icon, this.title, this.subtitle, {this.isDestructive = false});
+  _MenuItemData(this.icon, this.title, this.subtitle, {this.isDestructive = false, this.onTap});
 }

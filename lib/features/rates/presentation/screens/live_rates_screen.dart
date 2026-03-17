@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../../../core/constants/constants.dart';
 import '../../../../core/widgets/classic_rate_card.dart';
-import '../../../../core/widgets/classic_section_header.dart';
 import '../../../../core/widgets/live_price_indicator.dart';
 
 class LiveRatesScreen extends StatefulWidget {

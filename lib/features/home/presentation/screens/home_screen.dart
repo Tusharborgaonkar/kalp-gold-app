@@ -155,7 +155,7 @@ class HomeScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const ClassicSectionHeader(title: 'LIVE MARKET RATES', backgroundColor: AppColors.goldLight),
+        ClassicSectionHeader(title: 'LIVE MARKET RATES', backgroundColor: AppColors.goldLight),
         Container(
           color: AppColors.primaryLight,
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
@@ -192,7 +192,7 @@ class HomeScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const ClassicSectionHeader(title: 'RECENT TRANSACTIONS', actionLabel: 'SEE ALL'),
+        ClassicSectionHeader(title: 'RECENT TRANSACTIONS', actionLabel: 'SEE ALL'),
         _buildTransactionItem('Gold Purchase', 'Today, 14:20', '+\$520.00', true),
         _buildTransactionItem('Silver Purchase', 'Yesterday, 09:15', '+\$120.00', true),
         _buildTransactionItem('Deposit', 'Mon, 10:00', '+\$1,000.00', true),

@@ -59,14 +59,22 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> screens = [
-      HomeScreen(onTrade: () => _onTradeRequested(null)),
       LiveRatesScreen(
         onTrade: (metal) => _onTradeRequested(metal),
         onBack: _onBackRequested,
       ),
+      const Center(child: Text('Messages Screen', style: TextStyle(color: Colors.white))), // Placeholder
       TradeScreen(initialMetal: _pendingMetal),
-      const OrdersScreen(),
-      const ProfileScreen(),
+      LoginScreen(onLogin: () {
+        setState(() {
+          _selectedIndex = 0; // Switch to Live Rates tab on login
+        });
+      }),
+      ProfileScreen(onLogout: () {
+        setState(() {
+          _selectedIndex = 3; // Switch to Login tab
+        });
+      }),
     ];
 
     return Scaffold(
@@ -96,39 +104,34 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 });
               },
               type: BottomNavigationBarType.fixed,
-              backgroundColor: Colors.white,
-              selectedItemColor: AppColors.primary,
-              unselectedItemColor: AppColors.textSecondary.withValues(alpha: 0.5),
+              backgroundColor: const Color(0xFF1B2C4E), // Dark Navy matching screenshot
+              selectedItemColor: Colors.white,
+              unselectedItemColor: Colors.white.withValues(alpha: 0.6),
               showSelectedLabels: true,
               showUnselectedLabels: true,
-              selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 11),
-              unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 11),
+              selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 10),
+              unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w400, fontSize: 10),
               elevation: 0,
               items: const [
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.grid_view_outlined),
-                  activeIcon: Icon(Icons.grid_view_rounded),
-                  label: 'Home',
+                  icon: Icon(Icons.trending_up, size: 28),
+                  label: 'Live Rates',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.trending_up_outlined),
-                  activeIcon: Icon(Icons.trending_up_rounded),
-                  label: 'Rates',
+                  icon: Icon(Icons.account_balance, size: 28), // Bank icon as seen in mockup
+                  label: 'Messages',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.swap_horiz_outlined),
-                  activeIcon: Icon(Icons.swap_horiz_rounded),
-                  label: 'Trade',
+                  icon: Icon(Icons.description_outlined, size: 28), // Trades icon
+                  label: 'Trades',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.receipt_long_outlined),
-                  activeIcon: Icon(Icons.receipt_long_rounded),
-                  label: 'Orders',
+                  icon: Icon(Icons.person_pin, size: 28), // Login icon
+                  label: 'Login',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.person_outline_rounded),
-                  activeIcon: Icon(Icons.person_rounded),
-                  label: 'Profile',
+                  icon: Icon(Icons.menu, size: 28),
+                  label: 'Menu',
                 ),
               ],
             ),
@@ -141,7 +144,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 width: 30,
                 height: 4,
                 decoration: const BoxDecoration(
-                  color: AppColors.primary,
+                  color: Colors.white,
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(4),
                     bottomRight: Radius.circular(4),
