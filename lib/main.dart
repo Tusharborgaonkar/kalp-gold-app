@@ -50,11 +50,20 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     });
   }
 
+  void _onBackRequested() {
+    setState(() {
+      _selectedIndex = 0; // Index of HomeScreen
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<Widget> screens = [
       HomeScreen(onTrade: () => _onTradeRequested(null)),
-      LiveRatesScreen(onTrade: (metal) => _onTradeRequested(metal)),
+      LiveRatesScreen(
+        onTrade: (metal) => _onTradeRequested(metal),
+        onBack: _onBackRequested,
+      ),
       TradeScreen(initialMetal: _pendingMetal),
       const OrdersScreen(),
       const ProfileScreen(),
