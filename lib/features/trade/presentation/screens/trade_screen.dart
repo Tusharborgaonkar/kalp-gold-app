@@ -108,33 +108,126 @@ class _TradeScreenState extends State<TradeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         elevation: 0,
-        title: InkWell(
-          onTap: _showMetalSelector,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                _selectedMetal,
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
-              ),
-              const Icon(Icons.arrow_drop_down, color: AppColors.gold),
-            ],
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.of(context).maybePop(),
+        ),
+        title: Image.asset(
+          'assets/images/suvidhi_logo.png',
+          height: 45,
+          color: Colors.white, // In case it needs tinting, though the logo is gold
+          errorBuilder: (context, error, stackTrace) => const Text(
+            'SUVIDHI JEWELEX LLP',
+            style: TextStyle(color: AppColors.gold, fontWeight: FontWeight.bold, fontSize: 16),
           ),
         ),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            _buildPricePanel(),
-            _buildChartArea(),
-            _buildTradingPanel(),
-          ],
+      body: Stack(
+        children: [
+          // Background Pattern with Error Fallback
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.05, // Softer opacity for better readability
+              child: Image.asset(
+                'assets/images/diamond_pattern.png',
+                fit: BoxFit.cover,
+                repeat: ImageRepeat.repeat,
+                errorBuilder: (context, error, stackTrace) => Container(), // No ugly error lines
+              ),
+            ),
+          ),
+          
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                const SizedBox(height: 40),
+                _buildHeaderTitle('Trades Summary'),
+                _buildTableHeader(),
+                const SizedBox(height: 120), // Significant space
+                
+                _buildHeaderTitle('Pending Orders'),
+                _buildTableHeader(),
+                const SizedBox(height: 120), // Significant space
+                
+                const SizedBox(height: 60),
+                const ClassicSectionHeader(
+                  title: 'QUICK TRADE',
+                  backgroundColor: AppColors.primaryDark,
+                  textColor: Colors.white,
+                ),
+                const SizedBox(height: 20),
+                _buildPricePanel(),
+                _buildChartArea(),
+                _buildTradingPanel(),
+                const SizedBox(height: 180), // Final padding for scroll
+              ],
+            ),
+          ),
+
+          // Branded Floating buttons positioned clearly ABOVE the Bottom Nav
+          Positioned(
+            bottom: 90, // Repositioned higher to avoid overlap
+            left: 16,
+            child: FloatingActionButton(
+              heroTag: 'phoneTradeProper',
+              onPressed: () {},
+              backgroundColor: AppColors.error,
+              elevation: 4,
+              child: const Icon(Icons.phone, color: Colors.white, size: 28),
+            ),
+          ),
+          Positioned(
+            bottom: 90, // Repositioned higher to avoid overlap
+            right: 16,
+            child: FloatingActionButton(
+              heroTag: 'whatsappTradeProper',
+              onPressed: () {},
+              backgroundColor: AppColors.success,
+              elevation: 4,
+              child: const Icon(Icons.chat_bubble, color: Colors.white, size: 28),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeaderTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 32,
+          fontWeight: FontWeight.w900,
+          color: AppColors.primaryDark,
+          letterSpacing: -0.5,
         ),
+      ),
+    );
+  }
+
+  Widget _buildTableHeader() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      decoration: BoxDecoration(
+        color: AppColors.primaryDark,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: const Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(child: Text('Symbol', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13), textAlign: TextAlign.center)),
+          Expanded(child: Text('B/S', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13), textAlign: TextAlign.center)),
+          Expanded(child: Text('Qty', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13), textAlign: TextAlign.center)),
+          Expanded(child: Text('Price', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13), textAlign: TextAlign.center)),
+        ],
       ),
     );
   }
