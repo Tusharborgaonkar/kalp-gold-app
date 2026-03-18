@@ -7,6 +7,8 @@ import 'features/profile/presentation/screens/profile_screen.dart';
 import 'features/auth/presentation/screens/splash_screen.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
 import 'features/rates/presentation/screens/live_rates_screen.dart';
+import 'features/messages/presentation/screens/messages_screen.dart';
+import 'features/menu/presentation/screens/menu_screen.dart';
 import 'core/constants/constants.dart';
 
 void main() {
@@ -41,6 +43,8 @@ class MainNavigationScreen extends StatefulWidget {
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _selectedIndex = 0;
+  int _lastActiveIndex = 0;
+  int _selectedRateTab = 0; // 0: Live Rates, 1: Trend
   String? _pendingMetal;
 
   void _onTradeRequested(String? metal) {
@@ -50,37 +54,52 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     });
   }
 
-  void _onBackRequested() {
-    setState(() {
-      _selectedIndex = 0; // Index of HomeScreen
-    });
-  }
+
 
   @override
   Widget build(BuildContext context) {
     final List<Widget> screens = [
       LiveRatesScreen(
         onTrade: (metal) => _onTradeRequested(metal),
-        onBack: _onBackRequested,
+        initialTab: _selectedRateTab,
       ),
-      const Center(child: Text('Messages Screen', style: TextStyle(color: Colors.white))), // Placeholder
+      const MessagesScreen(),
       TradeScreen(initialMetal: _pendingMetal),
       LoginScreen(onLogin: () {
         setState(() {
           _selectedIndex = 0; // Switch to Live Rates tab on login
         });
       }),
-      ProfileScreen(onLogout: () {
-        setState(() {
-          _selectedIndex = 3; // Switch to Login tab
-        });
-      }),
+      MenuScreen(
+        onNavItemTap: (index, {tabIndex}) {
+          setState(() {
+            _selectedIndex = index;
+            _lastActiveIndex = index;
+            if (tabIndex != null) {
+              _selectedRateTab = tabIndex;
+            }
+          });
+        },
+        onClose: () {
+          setState(() {
+            _selectedIndex = _lastActiveIndex;
+          });
+        },
+      ),
     ];
 
     return Scaffold(
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: screens,
+      body: Stack(
+        children: [
+          // Background content (the active page)
+          IndexedStack(
+            index: _selectedIndex == 4 ? _lastActiveIndex : _selectedIndex,
+            children: screens.sublist(0, 4),
+          ),
+          // Menu Overlay
+          if (_selectedIndex == 4)
+            screens[4],
+        ],
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
@@ -99,6 +118,9 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
               currentIndex: _selectedIndex,
               onTap: (index) {
                 setState(() {
+                  if (_selectedIndex != 4) {
+                    _lastActiveIndex = _selectedIndex;
+                  }
                   _selectedIndex = index;
                   if (index != 2) _pendingMetal = null;
                 });

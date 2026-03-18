@@ -4,11 +4,16 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/constants.dart';
 import '../../../../core/widgets/classic_rate_card.dart';
 import '../../../../core/widgets/live_price_indicator.dart';
+import '../widgets/trend_view.dart';
 
 class LiveRatesScreen extends StatefulWidget {
   final Function(String?)? onTrade;
-  final VoidCallback? onBack;
-  const LiveRatesScreen({super.key, this.onTrade, this.onBack});
+  final int initialTab;
+  const LiveRatesScreen({
+    super.key, 
+    this.onTrade, 
+    this.initialTab = 0,
+  });
 
   @override
   State<LiveRatesScreen> createState() => _LiveRatesScreenState();
@@ -16,6 +21,15 @@ class LiveRatesScreen extends StatefulWidget {
 
 class _LiveRatesScreenState extends State<LiveRatesScreen> {
   Timer? _simulationTimer;
+  late int _currentTab; // 0: Live Rates, 1: Trend
+  
+  @override
+  void didUpdateWidget(LiveRatesScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialTab != widget.initialTab) {
+      _currentTab = widget.initialTab;
+    }
+  }
   
   // Market Data State
   final Map<String, Map<String, String>> _marketData = {
@@ -41,6 +55,7 @@ class _LiveRatesScreenState extends State<LiveRatesScreen> {
   @override
   void initState() {
     super.initState();
+    _currentTab = widget.initialTab;
     _startSimulation();
   }
 
@@ -92,16 +107,7 @@ class _LiveRatesScreenState extends State<LiveRatesScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.gold),
-          onPressed: () {
-            if (widget.onBack != null) {
-              widget.onBack!();
-            } else {
-              Navigator.of(context).maybePop();
-            }
-          },
-        ),
+        automaticallyImplyLeading: false,
         title: const Text(
           'LIVE RATES',
           style: TextStyle(
@@ -125,32 +131,83 @@ class _LiveRatesScreenState extends State<LiveRatesScreen> {
         children: [
           Container(
             color: AppColors.primaryLight,
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: const Center(
-              child: Text(
-                'LIVE RATES',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 13,
-                  letterSpacing: 1.0,
+            padding: const EdgeInsets.symmetric(vertical: 0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: InkWell(
+                    onTap: () => setState(() => _currentTab = 0),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: _currentTab == 0 ? AppColors.gold : Colors.transparent,
+                            width: 3,
+                          ),
+                        ),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'LIVE RATES',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                            letterSpacing: 1.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: InkWell(
+                    onTap: () => setState(() => _currentTab = 1),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: _currentTab == 1 ? AppColors.gold : Colors.transparent,
+                            width: 3,
+                          ),
+                        ),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'TREND',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                            letterSpacing: 1.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (_currentTab == 0) ...[
+            Expanded(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Column(
+                  children: [
+                    _buildMarketIndicators(),
+                    _buildTicker(),
+                    _buildPriceBoard(),
+                    const SizedBox(height: 100),
+                  ],
                 ),
               ),
             ),
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Column(
-                children: [
-                  _buildMarketIndicators(),
-                  _buildTicker(),
-                  _buildPriceBoard(),
-                  const SizedBox(height: 100),
-                ],
-              ),
-            ),
-          ),
+          ] else ...[
+            const Expanded(child: TrendView()),
+          ],
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -280,16 +337,16 @@ class _LiveRatesScreenState extends State<LiveRatesScreen> {
         widget.onTrade?.call(tradeKey);
       },
       child: Container(
-        padding: const EdgeInsets.fromLTRB(16, 10, 10, 10),
+        padding: const EdgeInsets.fromLTRB(16, 12, 10, 12),
         decoration: BoxDecoration(
           color: Colors.white,
-          border: Border(bottom: BorderSide(color: Colors.grey.shade200, width: 1)),
+          border: Border(bottom: BorderSide(color: Colors.grey.shade100, width: 1)),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
-              flex: 3,
+              flex: 4,
               child: Text(
                 product['name'],
                 style: const TextStyle(
@@ -300,20 +357,23 @@ class _LiveRatesScreenState extends State<LiveRatesScreen> {
               ),
             ),
             Expanded(
-              flex: 2,
-              child: LivePriceIndicator(
-                price: product['price'],
-                style: const TextStyle(
-                  color: AppColors.textPrimary,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: -0.5,
+              flex: 3,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child: LivePriceIndicator(
+                  price: product['price'],
+                  style: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.5,
+                  ),
+                  textAlign: TextAlign.right,
+                  showArrow: true,
                 ),
-                textAlign: TextAlign.right,
-                showArrow: true,
               ),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 8),
             Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,

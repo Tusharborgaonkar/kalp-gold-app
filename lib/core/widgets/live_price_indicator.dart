@@ -8,6 +8,8 @@ class LivePriceIndicator extends StatefulWidget {
   final TextStyle style;
   final TextAlign textAlign;
   final bool showArrow;
+  final bool showShadow;
+  final bool showBackground;
 
   const LivePriceIndicator({
     super.key,
@@ -15,6 +17,8 @@ class LivePriceIndicator extends StatefulWidget {
     required this.style,
     this.textAlign = TextAlign.right,
     this.showArrow = true,
+    this.showShadow = true,
+    this.showBackground = true,
   });
 
   @override
@@ -88,17 +92,15 @@ class _LivePriceIndicatorState extends State<LivePriceIndicator> with SingleTick
       if (newPrice != null && _oldPrice != null && newPrice != _oldPrice) {
         final currentProfitStatus = newPrice > _oldPrice! ? PriceStatus.profit : PriceStatus.loss;
         
-        // Start 2-second delay
-        _delayTimer = Timer(const Duration(seconds: 2), () {
-          if (!mounted) return;
-          setState(() {
-            _status = currentProfitStatus;
-          });
-          final color = _status == PriceStatus.profit 
-              ? const Color(0xFF52F30C).withValues(alpha: 0.8) // High opacity for inner box
-              : const Color(0xFFFF0505).withValues(alpha: 0.8);
-          _triggerAnimation(color);
+        setState(() {
+          _status = currentProfitStatus;
         });
+
+        final color = _status == PriceStatus.profit 
+            ? const Color(0xFF00C853) // Vibrant Green
+            : const Color(0xFFFF0000); // Vibrant Red
+            
+        _triggerAnimation(color);
       }
       
       _oldPrice = newPrice;
@@ -125,19 +127,19 @@ class _LivePriceIndicatorState extends State<LivePriceIndicator> with SingleTick
       builder: (context, child) {
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-          decoration: BoxDecoration(
+          decoration: widget.showBackground ? BoxDecoration(
             color: _colorAnimation.value,
             borderRadius: BorderRadius.circular(6),
-            boxShadow: _status != PriceStatus.none && _controller.isAnimating && _controller.value > 0.05 && _controller.value < 0.85
+            boxShadow: widget.showShadow && _status != PriceStatus.none && _controller.isAnimating && _controller.value > 0.05 && _controller.value < 0.85
                 ? [
                     BoxShadow(
-                      color: (_status == PriceStatus.profit ? const Color(0xFF52F30C) : const Color(0xFFFF0505)).withValues(alpha: 0.4),
+                      color: (_status == PriceStatus.profit ? const Color(0xFF00C853) : const Color(0xFFFF0000)).withValues(alpha: 0.4),
                       blurRadius: 15,
                       spreadRadius: 1,
                     )
                   ]
                 : [],
-          ),
+          ) : null,
           child: ScaleTransition(
             scale: _scaleAnimation,
             child: FittedBox(
@@ -151,13 +153,17 @@ class _LivePriceIndicatorState extends State<LivePriceIndicator> with SingleTick
                       padding: const EdgeInsets.only(right: 2.0),
                       child: Icon(
                         _status == PriceStatus.profit ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                        color: _status == PriceStatus.profit ? const Color(0xFF52F30C) : const Color(0xFFFF0505),
+                        color: Colors.white,
                         size: widget.style.fontSize != null ? widget.style.fontSize! * 0.9 : 18,
                       ),
                     ),
                   Text(
                     _displayPrice,
-                    style: widget.style,
+                    style: widget.style.copyWith(
+                      color: (_status != PriceStatus.none && _controller.isAnimating && _controller.value > 0.05) 
+                        ? Colors.white 
+                        : widget.style.color,
+                    ),
                     textAlign: widget.textAlign,
                   ),
                 ],

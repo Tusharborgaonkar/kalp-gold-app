@@ -3,9 +3,72 @@ import '../../../../core/constants/constants.dart';
 import '../../../../core/widgets/classic_action_button.dart';
 import 'signup_screen.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   final VoidCallback? onLogin;
   const LoginScreen({super.key, this.onLogin});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _mobileController = TextEditingController();
+  final TextEditingController _otpController = TextEditingController();
+  
+  bool _showOtpField = false;
+  bool _isLoading = false;
+  String? _mockOtp;
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _mobileController.dispose();
+    _otpController.dispose();
+    super.dispose();
+  }
+
+  void _generateOtp() async {
+    // Proceed without validation as requested by user
+    setState(() => _isLoading = true);
+    
+    // Simulate API delay
+    await Future.delayed(const Duration(seconds: 1));
+    
+    setState(() {
+      _isLoading = false;
+      _showOtpField = true;
+      _mockOtp = '1234'; // Simulated OTP
+    });
+
+    _showSuccess('OTP Sent: 1234');
+  }
+
+  void _handleLogin() {
+    final otp = _otpController.text.trim();
+    if (otp == _mockOtp) {
+      if (widget.onLogin != null) {
+        widget.onLogin!();
+      } else {
+        // Standalone navigation fallback (e.g. from SplashScreen)
+        Navigator.of(context).pushReplacementNamed('/home');
+      }
+    } else {
+      _showError('Invalid OTP. Please enter 1234');
+    }
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
+    );
+  }
+
+  void _showSuccess(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: Colors.green),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +89,6 @@ class LoginScreen extends StatelessWidget {
           SafeArea(
             child: Column(
               children: [
-                // Logo Header
                 _buildLogoHeader(),
                 
                 Expanded(
@@ -38,20 +100,18 @@ class LoginScreen extends StatelessWidget {
                         children: [
                           const SizedBox(height: 40),
                           _buildLoginCard(context),
-                          const SizedBox(height: 100), // Space for floating buttons
+                          const SizedBox(height: 100),
                         ],
                       ),
                     ),
                   ),
                 ),
                 
-                // Footer
                 _buildFooter(),
               ],
             ),
           ),
 
-          // Floating Action Buttons
           _buildFloatingButtons(),
         ],
       ),
@@ -61,8 +121,8 @@ class LoginScreen extends StatelessWidget {
   Widget _buildLogoHeader() {
     return Container(
       width: double.infinity,
-      color: AppColors.primary, // Using Deep Navy from constants
-      height: 60, // Set height instead of padding with logo
+      color: AppColors.primary,
+      height: 60,
     );
   }
 
@@ -83,7 +143,6 @@ class LoginScreen extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Card Header
           Container(
             width: double.infinity,
             color: AppColors.primary,
@@ -99,22 +158,49 @@ class LoginScreen extends StatelessWidget {
             ),
           ),
           
-          // Card Body
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                _buildTextField('Name'),
-                const SizedBox(height: 12),
-                _buildTextField('Mobile Number'),
+                if (!_showOtpField) ...[
+                  _buildTextField(
+                    'Name', 
+                    controller: _nameController, 
+                    action: TextInputAction.next,
+                  ),
+                  const SizedBox(height: 12),
+                  _buildTextField(
+                    'Mobile Number', 
+                    controller: _mobileController, 
+                    isPhone: true, 
+                    action: TextInputAction.done,
+                    onSubmitted: (_) => _generateOtp(),
+                  ),
+                ] else ...[
+                  Text(
+                    'OTP sent to ${_mobileController.text}',
+                    style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                  ),
+                  const SizedBox(height: 12),
+                  _buildTextField(
+                    'Enter OTP', 
+                    controller: _otpController, 
+                    isPhone: true, 
+                    action: TextInputAction.done,
+                    onSubmitted: (_) => _handleLogin(),
+                  ),
+                  TextButton(
+                    onPressed: () => setState(() => _showOtpField = false),
+                    child: const Text('Change Details', style: TextStyle(color: AppColors.primary)),
+                  ),
+                ],
                 const SizedBox(height: 24),
                 
-                // Generate OTP Button
                 SizedBox(
                   width: double.infinity,
                   height: 48,
                   child: ElevatedButton(
-                    onPressed: onLogin ?? () {},
+                    onPressed: _isLoading ? null : (_showOtpField ? _handleLogin : _generateOtp),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       foregroundColor: Colors.white,
@@ -123,17 +209,18 @@ class LoginScreen extends StatelessWidget {
                       ),
                       elevation: 0,
                     ),
-                    child: const Text(
-                      'Generate OTP',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
+                    child: _isLoading 
+                      ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                      : Text(
+                          _showOtpField ? 'Login' : 'Generate OTP',
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
                   ),
                 ),
               ],
             ),
           ),
           
-          // Card Footer
           Container(
             width: double.infinity,
             color: AppColors.primary,
@@ -153,19 +240,33 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTextField(String hint) {
+  Widget _buildTextField(
+    String hint, {
+    required TextEditingController controller,
+    bool isPhone = false,
+    TextInputAction? action,
+    ValueChanged<String>? onSubmitted,
+  }) {
     return TextField(
+      controller: controller,
+      keyboardType: isPhone ? TextInputType.phone : TextInputType.text,
+      textInputAction: action,
+      onSubmitted: onSubmitted,
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 16),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(4),
-          borderSide: const BorderSide(color: Colors.grey),
+          borderRadius: BorderRadius.circular(isPhone ? 25 : 4),
+          borderSide: const BorderSide(color: Colors.black87),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(4),
-          borderSide: const BorderSide(color: Colors.grey),
+          borderRadius: BorderRadius.circular(isPhone ? 25 : 4),
+          borderSide: const BorderSide(color: Colors.black87),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(isPhone ? 25 : 4),
+          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
         ),
       ),
     );
@@ -197,7 +298,6 @@ class LoginScreen extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Call Button
             Container(
               width: 50,
               height: 50,
@@ -209,7 +309,6 @@ class LoginScreen extends StatelessWidget {
               child: const Icon(Icons.phone, color: Colors.white),
             ),
             
-            // WhatsApp Button
             Container(
               width: 50,
               height: 50,

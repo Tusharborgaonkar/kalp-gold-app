@@ -76,16 +76,13 @@ class _ClassicRateCardState extends State<ClassicRateCard> with SingleTickerProv
       if (newPrice != null && _oldPrice != null && newPrice != _oldPrice) {
         final currentStatus = newPrice > _oldPrice! ? PriceStatus.profit : PriceStatus.loss;
         
-        _delayTimer = Timer(const Duration(seconds: 2), () {
-          if (!mounted) return;
-          setState(() {
-            _status = currentStatus;
-            final flashColor = _status == PriceStatus.profit 
-                ? const Color(0xA552F30C).withValues(alpha: 0.4) // Subtle full card flash
-                : const Color(0xD0FF0505).withValues(alpha: 0.4);
-            _setupAnimation(flashColor);
-            _controller.forward(from: 0.0);
-          });
+        setState(() {
+          _status = currentStatus;
+          final flashColor = _status == PriceStatus.profit 
+              ? const Color(0xFF00C853) // 100% Solid Vibrant Green
+              : const Color(0xFFFF0000); // 100% Solid Vibrant Red
+          _setupAnimation(flashColor);
+          _controller.forward(from: 0.0);
         });
       }
       _oldPrice = newPrice;
@@ -111,15 +108,6 @@ class _ClassicRateCardState extends State<ClassicRateCard> with SingleTickerProv
             color: _colorAnimation.value,
             borderRadius: BorderRadius.circular(4),
             border: Border.all(color: Colors.white10),
-            boxShadow: _status != PriceStatus.none && _controller.isAnimating && _controller.value > 0.1 && _controller.value < 0.7
-                ? [
-                    BoxShadow(
-                      color: (_status == PriceStatus.profit ? const Color(0xA552F30C) : const Color(0xD0FF0505)).withValues(alpha: 0.2),
-                      blurRadius: 20,
-                      spreadRadius: 3,
-                    )
-                  ]
-                : [],
           ),
           child: Column(
             children: [
@@ -139,6 +127,8 @@ class _ClassicRateCardState extends State<ClassicRateCard> with SingleTickerProv
                       style: const TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                       showArrow: false,
+                      showShadow: false,
+                      showBackground: false,
                     ),
                     if (widget.value2 != null) ...[
                       const SizedBox(width: 4),
@@ -147,6 +137,8 @@ class _ClassicRateCardState extends State<ClassicRateCard> with SingleTickerProv
                         style: const TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                         showArrow: false,
+                        showShadow: false,
+                        showBackground: false,
                       ),
                     ],
                   ],
