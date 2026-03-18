@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/constants.dart';
+import '../../../trade/presentation/screens/trade_history_screen.dart';
+import '../../../bank/presentation/screens/bank_details_screen.dart';
+import '../../../contact/presentation/screens/contact_us_screen.dart';
+import '../../../news/presentation/screens/news_screen.dart';
+import '../../../about/presentation/screens/about_us_screen.dart';
+import '../../../rates/presentation/screens/rate_alert_screen.dart';
 
 class MenuScreen extends StatelessWidget {
   final Function(int, {int? tabIndex})? onNavItemTap;
@@ -69,14 +75,74 @@ class MenuScreen extends StatelessWidget {
                     children: [
                       _buildMenuItem(Icons.bar_chart, 'LIVE RATES', onTap: () => onNavItemTap?.call(0, tabIndex: 0)),
                       _buildMenuItem(Icons.description_outlined, 'TRADES', onTap: () => onNavItemTap?.call(2)),
-                      _buildMenuItem(Icons.history, 'TRADE HISTORY'),
-                      _buildMenuItem(Icons.account_balance, 'BANK DETAILS'),
+                      _buildMenuItem(
+                        Icons.history,
+                        'TRADE HISTORY',
+                        onTap: () {
+                          onClose?.call(); // Close the menu first
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const TradeHistoryScreen()),
+                          );
+                        },
+                      ),
+                      _buildMenuItem(
+                        Icons.account_balance,
+                        'BANK DETAILS',
+                        onTap: () {
+                          onClose?.call(); // Close the menu
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const BankDetailsScreen()),
+                          );
+                        },
+                      ),
                       _buildMenuItem(Icons.balance, 'GOLD TRENDS', onTap: () => onNavItemTap?.call(0, tabIndex: 1)),
                       _buildMenuItem(Icons.chat_bubble_outline, 'MESSAGES', onTap: () => onNavItemTap?.call(1)),
-                      _buildMenuItem(Icons.call_outlined, 'CONTACT US'),
-                      _buildMenuItem(Icons.newspaper, 'NEWS'),
-                      _buildMenuItem(Icons.groups_outlined, 'ABOUT US'),
-                      _buildMenuItem(Icons.notifications_none, 'RATE ALERT'),
+                      _buildMenuItem(
+                        Icons.call_outlined,
+                        'CONTACT US',
+                        onTap: () {
+                          onClose?.call(); // Close the menu
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const ContactUsScreen()),
+                          );
+                        },
+                      ),
+                      _buildMenuItem(
+                        Icons.newspaper,
+                        'NEWS',
+                        onTap: () {
+                          onClose?.call(); // Close the menu
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const NewsScreen()),
+                          );
+                        },
+                      ),
+                      _buildMenuItem(
+                        Icons.groups_outlined,
+                        'ABOUT US',
+                        onTap: () {
+                          onClose?.call(); // Close the menu
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const AboutUsScreen()),
+                          );
+                        },
+                      ),
+                      _buildMenuItem(
+                        Icons.notifications_none,
+                        'RATE ALERT',
+                        onTap: () {
+                          onClose?.call(); // Close the menu
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const RateAlertScreen()),
+                          );
+                        },
+                      ),
                       _buildMenuItem(Icons.timeline, 'CHART'),
                       _buildMenuItem(Icons.wallet_outlined, 'MARGIN'),
                       _buildMenuItem(Icons.login, 'LOGIN', onTap: () => onNavItemTap?.call(3)),

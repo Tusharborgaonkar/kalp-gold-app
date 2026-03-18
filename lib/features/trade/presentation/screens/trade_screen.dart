@@ -244,29 +244,33 @@ class _TradeScreenState extends State<TradeScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: ['1D', '5D', '1M', '3M', '6M', '1Y'].map((range) {
-              final isSelected = _selectedTimeRange == range;
-              return GestureDetector(
-                onTap: () => setState(() => _selectedTimeRange = range),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: isSelected ? AppColors.primary : Colors.transparent,
-                    border: Border.all(color: AppColors.primary),
-                  ),
-                  child: Text(
-                    range,
-                    style: TextStyle(
-                      color: isSelected ? AppColors.gold : AppColors.primary,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: ['1D', '5D', '1M', '3M', '6M', '1Y'].map((range) {
+                final isSelected = _selectedTimeRange == range;
+                return GestureDetector(
+                  onTap: () => setState(() => _selectedTimeRange = range),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    margin: const EdgeInsets.symmetric(horizontal: 4),
+                    decoration: BoxDecoration(
+                      color: isSelected ? AppColors.primary : Colors.transparent,
+                      border: Border.all(color: AppColors.primary),
+                    ),
+                    child: Text(
+                      range,
+                      style: TextStyle(
+                        color: isSelected ? AppColors.gold : AppColors.primary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
                     ),
                   ),
-                ),
-              );
-            }).toList(),
+                );
+              }).toList(),
+            ),
           ),
         ],
       ),
